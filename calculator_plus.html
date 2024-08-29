@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .button{
+            padding: 10px;
+            width: 75px;
+            height: 75px;
+        }
+        #prevNum{
+            color: grey;
+        }
+    </style>
+    <script>
+        prevNum = 0;
+        calculating = false;
+        calMethod = 0;
+        savedNum = 0;
+        //현재 입력된 숫자 저장 및 표시
+        function startCalc(){
+            origin = document.getElementById("number");
+            prevNum = parseFloat(origin.value);
+            document.getElementById("prevNum").innerHTML = prevNum;
+            origin.value = "";
+            calculating = true;
+        }
+        //startCalc 실행하고 계산 방법 결정 및 표시
+        function add(){
+            if(calculating) return;
+            startCalc();
+            document.getElementById("prevNum").innerHTML += " + ";
+            calMethod = 0;
+        }
+        function subtract(){
+            if(calculating) return;
+            startCalc();
+            document.getElementById("prevNum").innerHTML += " - ";
+            calMethod = 1;
+        }
+        function multiply(){
+            if(calculating) return;
+            startCalc();
+            document.getElementById("prevNum").innerHTML += " * ";
+            calMethod = 2;
+        }
+        function divide(){
+            if(calculating) return;
+            startCalc();
+            document.getElementById("prevNum").innerHTML += " / ";
+            calMethod = 3;
+        }
+        //계산기에 숫자 추가
+        function addNum(num){
+            document.getElementById("number").value += num;
+        }
+        //계산기에서 숫자 제거
+        function removeNum(){
+            origin = document.getElementById("number");
+            val = origin.value;
+            if(val.length==0) return;
+            val = val.slice(0, val.length-1);
+            origin.value = val;
+        }
+        //숫자 저장 및 표시
+        function saveNum(){
+            savedNum = parseFloat(document.getElementById("number").value);
+            document.getElementById("savedNum").innerHTML = "saved: " + savedNum.toString();
+        }
+        //저장된 숫자 로드
+        function loadNum(){
+            document.getElementById("number").value = savedNum;
+        }
+        //계산기 숫자 전부 지우기
+        function clearCalc(){
+            document.getElementById("number").value = "";
+        }
+        //저장된 계산 방법에 따라 최종 계산 및 표시
+        function enter(){
+            if(!calculating) return;
+            origin = document.getElementById("number");
+            logContent = prevNum.toString();
+            prev = origin.value;
+            if(calMethod == 0){
+                origin.value = prevNum + parseFloat(origin.value);
+                logContent += " + ";
+            }
+            else if(calMethod == 1){
+                origin.value = prevNum - parseFloat(origin.value);
+                logContent += " - ";
+            }
+            else if(calMethod == 2){
+                origin.value = prevNum * parseFloat(origin.value);
+                logContent += " * ";
+            }
+            else if(calMethod == 3){
+                origin.value = prevNum / parseFloat(origin.value);
+                logContent += " / ";
+            }
+            logContent += prev.toString() + " = " + origin.value.toString();
+            document.getElementById("prevNum").innerHTML = "";
+            calculating = false;
+            addLog(logContent);
+        }
+        function addLog(logContent){
+            document.getElementById("log").innerHTML += (Math.floor((Date.now() - 3600000 * 15)%86400000/3600000).toString() + "h " + Math.floor(Date.now()%86400000%3600000/60000).toString() + "m") + ": " + logContent + "<br>";
+        }
+    </script>
+</head>
+<body>
+    <p id="savedNum"></p>
+    <p id="prevNum"></p>
+    <input type=text id="number" value=""><br>
+    <input type=button value="1" onClick="addNum(1)" class="button">
+    <input type=button value="2" onClick="addNum(2)" class="button">
+    <input type=button value="3" onClick="addNum(3)" class="button">
+    <input type=button value="-" onClick="removeNum()" class="button">
+    <input type=button value="clr" onClick="clearCalc()" class="button"><br>
+    <input type=button value="4" onClick="addNum(4)" class="button">
+    <input type=button value="5" onClick="addNum(5)" class="button">
+    <input type=button value="6" onClick="addNum(6)" class="button">
+    <input type=button value="save" onClick="saveNum()" class="button">
+    <input type=button value="load" onClick="loadNum()" class="button"><br>
+    <input type=button value="7" onClick="addNum(7)" class="button">
+    <input type=button value="8" onClick="addNum(8)" class="button">
+    <input type=button value="9" onClick="addNum(9)" class="button">
+    <input type=button value="calc" onClick="enter()" class="button"><br>
+    <input type=button value="+" onClick="add()" class="button">
+    <input type=button value="-" onClick="subtract()" class="button">
+    <input type=button value="*" onClick="multiply()" class="button">
+    <input type=button value="/" onClick="divide()" class="button"><br>
+    <h3>Calculation Log</h3>
+    <p id="log"></p>
+</body>
+</html>
